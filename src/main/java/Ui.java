@@ -23,4 +23,11 @@ public class Ui {
         System.out.println(message);
         System.out.println(LINE);
     }
+
+    public static void showError(String message) {
+        System.out.println(LINE);
+        System.out.println(message);
+        System.out.println(LINE);
+    }
+
 }
