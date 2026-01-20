@@ -25,4 +25,9 @@ public class TaskList {
         }
         return sb.toString().trim();
     }
+
+    public Task delete(int oneBasedIndex) {
+        return tasks.remove(oneBasedIndex - 1);
+    }
+
 }

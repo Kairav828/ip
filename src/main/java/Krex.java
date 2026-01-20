@@ -61,6 +61,14 @@ public class Krex {
                     continue;
                 }
 
+                if (Parser.isDelete(input)) {
+                    int idx = Parser.parseIndex(input);
+                    Task removed = taskList.delete(idx);
+                    Ui.showMessage("Noted. I've removed this task:\n  " + removed
+                            + "\nNow you have " + taskList.size() + " tasks in the list.");
+                    continue;
+                }
+
                 // Unknown command
                 throw new KrexException("OOPS!!! I'm sorry, but I don't know what that means :-(");
 

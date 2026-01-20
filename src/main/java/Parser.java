@@ -54,4 +54,9 @@ public class Parser {
         return new String[] { desc, second[0].trim(), second[1].trim() };
     }
 
+    public static boolean isDelete(String input) {
+        return input.trim().startsWith("delete ");
+    }
+
+
 }
