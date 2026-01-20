@@ -28,3 +28,7 @@ expected output
 ## Feature XYZ
 
 // Feature details
+
+## AI Usage Declaration
+
+I have used ChatGPT throughout this iP
