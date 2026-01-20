@@ -5,15 +5,23 @@ public class Krex {
         Ui.showWelcome();
 
         Scanner sc = new Scanner(System.in);
+        TaskList taskList = new TaskList();
+
         while (true) {
             String input = sc.nextLine();
 
-            if (input.trim().equals("bye")) {
+            if (Parser.isBye(input)) {
                 Ui.showBye();
                 break;
             }
 
-            Ui.showMessage(input);
+            if (Parser.isList(input)) {
+                Ui.showMessage(taskList.formatList());
+                continue;
+            }
+
+            taskList.add(input);
+            Ui.showMessage("added: " + input);
         }
     }
 }
