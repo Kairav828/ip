@@ -8,6 +8,12 @@ public class Event extends Task {
         this.to = to;
     }
 
+    public String getDescription() { return description; }
+    
+    public String getFromRaw() { return from; }
+    
+    public String getToRaw() { return to; }
+
     @Override
     public String toString() {
         return "[E]" + super.toString() + " (from: " + from + " to: " + to + ")";

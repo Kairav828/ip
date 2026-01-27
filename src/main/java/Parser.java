@@ -1,14 +1,49 @@
 public class Parser {
-    public static boolean isBye(String input) { return input.trim().equals("bye"); }
-    public static boolean isList(String input) { return input.trim().equals("list"); }
-    public static boolean isMark(String input) { return input.trim().startsWith("mark "); }
-    public static boolean isUnmark(String input) { return input.trim().startsWith("unmark "); }
 
-    public static boolean isTodo(String input) { return input.startsWith("todo "); }
-    public static boolean isDeadline(String input) { return input.startsWith("deadline "); }
-    public static boolean isEvent(String input) { return input.startsWith("event "); }
+    public static Command parse(String input) throws KrexException {
+        String trimmed = input.trim();
 
-    public static int parseIndex(String input) throws KrexException {
+        if (trimmed.equals("bye")) {
+            return Command.bye();
+        }
+        if (trimmed.equals("list")) {
+            return Command.list();
+        }
+
+        if (trimmed.startsWith("mark ")) {
+            int idx = parseIndex(trimmed);
+            return Command.index(CommandType.MARK, idx);
+        }
+
+        if (trimmed.startsWith("unmark ")) {
+            int idx = parseIndex(trimmed);
+            return Command.index(CommandType.UNMARK, idx);
+        }
+
+        if (trimmed.startsWith("delete ")) {
+            int idx = parseIndex(trimmed);
+            return Command.index(CommandType.DELETE, idx);
+        }
+
+        if (trimmed.startsWith("todo")) {
+            String desc = parseTodoDesc(trimmed);
+            return Command.add(CommandType.TODO, new Todo(desc));
+        }
+
+        if (trimmed.startsWith("deadline")) {
+            String[] parts = parseDeadline(trimmed); // [desc, by]
+            return Command.add(CommandType.DEADLINE, new Deadline(parts[0], parts[1]));
+        }
+
+        if (trimmed.startsWith("event")) {
+            String[] parts = parseEvent(trimmed); // [desc, from, to]
+            return Command.add(CommandType.EVENT, new Event(parts[0], parts[1], parts[2]));
+        }
+
+        throw new KrexException("OOPS!!! I'm sorry, but I don't know what that means :-(");
+    }
+
+    private static int parseIndex(String input) throws KrexException {
         String[] parts = input.trim().split("\\s+");
         if (parts.length < 2) {
             throw new KrexException("OOPS!!! Please provide an index.");
@@ -20,8 +55,7 @@ public class Parser {
         }
     }
 
-
-    public static String parseTodoDesc(String input) throws KrexException {
+    private static String parseTodoDesc(String input) throws KrexException {
         String desc = input.substring("todo".length()).trim();
         if (desc.isEmpty()) {
             throw new KrexException("OOPS!!! The description of a todo cannot be empty.");
@@ -29,8 +63,7 @@ public class Parser {
         return desc;
     }
 
-
-    public static String[] parseDeadline(String input) throws KrexException {
+    private static String[] parseDeadline(String input) throws KrexException {
         String body = input.substring("deadline".length()).trim();
         String[] split = body.split(" /by ", 2);
         if (split.length < 2 || split[0].trim().isEmpty() || split[1].trim().isEmpty()) {
@@ -39,8 +72,7 @@ public class Parser {
         return new String[] { split[0].trim(), split[1].trim() };
     }
 
-
-    public static String[] parseEvent(String input) throws KrexException {
+    private static String[] parseEvent(String input) throws KrexException {
         String body = input.substring("event".length()).trim();
         String[] first = body.split(" /from ", 2);
         if (first.length < 2 || first[0].trim().isEmpty()) {
@@ -53,10 +85,4 @@ public class Parser {
         }
         return new String[] { desc, second[0].trim(), second[1].trim() };
     }
-
-    public static boolean isDelete(String input) {
-        return input.trim().startsWith("delete ");
-    }
-
-
 }
