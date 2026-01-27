@@ -1,81 +1,91 @@
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class Krex {
     private static final String SAVE_PATH = "data/krex.txt";
 
-    public static void main(String[] args) {
-        Ui.showWelcome();
+    private final Storage storage;
+    private final TaskList taskList;
+    private final Ui ui;
 
-        Storage storage = new Storage(SAVE_PATH);
-        TaskList taskList;
+    public Krex(String filePath) {
+        ui = new Ui();
+        storage = new Storage(filePath);
 
+        TaskList loadedTasks;
         try {
             ArrayList<Task> loaded = storage.load();
-            taskList = new TaskList(loaded);
+            loadedTasks = new TaskList(loaded);
         } catch (KrexException e) {
-            Ui.showError(e.getMessage());
-            taskList = new TaskList();
+            ui.showError(e.getMessage());
+            loadedTasks = new TaskList();
         }
+        taskList = loadedTasks;
+    }
 
-        try (Scanner sc = new Scanner(System.in)) {
-            while (true) {
-                String input = sc.nextLine().trim();
+    public void run() {
+        ui.showWelcome();
 
-                try {
-                    Command cmd = Parser.parse(input);
+        while (true) {
+            String input = ui.readCommand();
 
-                    switch (cmd.type) {
-                    case BYE:
-                        Ui.showBye();
-                        storage.save(taskList.getTasks());
-                        return; // exits the program back to terminal
+            try {
+                Command cmd = Parser.parse(input);
 
-                    case LIST:
-                        Ui.showMessage(taskList.formatList());
-                        break;
+                switch (cmd.type) {
+                case BYE:
+                    ui.showBye();
+                    storage.save(taskList.getTasks());
+                    ui.close();
+                    return;
 
-                    case TODO:
-                    case DEADLINE:
-                    case EVENT:
-                        taskList.add(cmd.task);
-                        storage.save(taskList.getTasks());
-                        Ui.showMessage("Got it. I've added this task:\n  " + cmd.task
-                                + "\nNow you have " + taskList.size() + " tasks in the list.");
-                        break;
+                case LIST:
+                    ui.showMessage(taskList.formatList());
+                    break;
 
-                    case MARK: {
-                        Task t = taskList.get(cmd.index);
-                        t.markDone();
-                        storage.save(taskList.getTasks());
-                        Ui.showMessage("Nice! I've marked this task as done:\n  " + t);
-                        break;
-                    }
+                case TODO:
+                case DEADLINE:
+                case EVENT:
+                    taskList.add(cmd.task);
+                    storage.save(taskList.getTasks());
+                    ui.showMessage("Got it. I've added this task:\n  " + cmd.task
+                            + "\nNow you have " + taskList.size() + " tasks in the list.");
+                    break;
 
-                    case UNMARK: {
-                        Task t = taskList.get(cmd.index);
-                        t.unmarkDone();
-                        storage.save(taskList.getTasks());
-                        Ui.showMessage("OK, I've marked this task as not done yet:\n  " + t);
-                        break;
-                    }
-
-                    case DELETE: {
-                        Task removed = taskList.delete(cmd.index);
-                        storage.save(taskList.getTasks());
-                        Ui.showMessage("Noted. I've removed this task:\n  " + removed
-                                + "\nNow you have " + taskList.size() + " tasks in the list.");
-                        break;
-                    }
-
-                    default:
-                        throw new KrexException("OOPS!!! I'm sorry, but I don't know what that means :-(");
-                    }
-
-                } catch (KrexException e) {
-                    Ui.showError(e.getMessage());
+                case MARK: {
+                    Task t = taskList.get(cmd.index);
+                    t.markDone();
+                    storage.save(taskList.getTasks());
+                    ui.showMessage("Nice! I've marked this task as done:\n  " + t);
+                    break;
                 }
+
+                case UNMARK: {
+                    Task t = taskList.get(cmd.index);
+                    t.unmarkDone();
+                    storage.save(taskList.getTasks());
+                    ui.showMessage("OK, I've marked this task as not done yet:\n  " + t);
+                    break;
+                }
+
+                case DELETE: {
+                    Task removed = taskList.delete(cmd.index);
+                    storage.save(taskList.getTasks());
+                    ui.showMessage("Noted. I've removed this task:\n  " + removed
+                            + "\nNow you have " + taskList.size() + " tasks in the list.");
+                    break;
+                }
+
+                default:
+                    throw new KrexException("OOPS!!! I'm sorry, but I don't know what that means :-(");
+                }
+
+            } catch (KrexException e) {
+                ui.showError(e.getMessage());
             }
         }
+    }
+
+    public static void main(String[] args) {
+        new Krex(SAVE_PATH).run();
     }
 }
