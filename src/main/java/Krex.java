@@ -1,85 +1,81 @@
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Krex {
+    private static final String SAVE_PATH = "data/krex.txt";
+
     public static void main(String[] args) {
         Ui.showWelcome();
 
-        Scanner sc = new Scanner(System.in);
-        TaskList taskList = new TaskList();
+        Storage storage = new Storage(SAVE_PATH);
+        TaskList taskList;
 
-        while (true) {
-            String input = sc.nextLine().trim();
-
-            try {
-                if (Parser.isBye(input)) {
-                    Ui.showBye();
-                    break;
-                }
-
-                if (Parser.isList(input)) {
-                    Ui.showMessage(taskList.formatList());
-                    continue;
-                }
-
-                if (Parser.isMark(input)) {
-                    int idx = Parser.parseIndex(input);
-                    Task t = taskList.get(idx);
-                    t.markDone();
-                    Ui.showMessage("Nice! I've marked this task as done:\n  " + t);
-                    continue;
-                }
-
-                if (Parser.isUnmark(input)) {
-                    int idx = Parser.parseIndex(input);
-                    Task t = taskList.get(idx);
-                    t.unmarkDone();
-                    Ui.showMessage("OK, I've marked this task as not done yet:\n  " + t);
-                    continue;
-                }
-
-                if (Parser.isTodo(input)) {
-                    String desc = Parser.parseTodoDesc(input);
-                    Task t = new Todo(desc);
-                    taskList.add(t);
-                    Ui.showMessage("Got it. I've added this task:\n  " + t + "\nNow you have " + taskList.size() + " tasks in the list.");
-                    continue;
-                }
-
-                if (Parser.isDeadline(input)) {
-                    String[] parts = Parser.parseDeadline(input);
-                    Task t = new Deadline(parts[0], parts[1]);
-                    taskList.add(t);
-                    Ui.showMessage("Got it. I've added this task:\n  " + t + "\nNow you have " + taskList.size() + " tasks in the list.");
-                    continue;
-                }
-
-                if (Parser.isEvent(input)) {
-                    String[] parts = Parser.parseEvent(input);
-                    Task t = new Event(parts[0], parts[1], parts[2]);
-                    taskList.add(t);
-                    Ui.showMessage("Got it. I've added this task:\n  " + t + "\nNow you have " + taskList.size() + " tasks in the list.");
-                    continue;
-                }
-
-                if (Parser.isDelete(input)) {
-                    int idx = Parser.parseIndex(input);
-                    Task removed = taskList.delete(idx);
-                    Ui.showMessage("Noted. I've removed this task:\n  " + removed
-                            + "\nNow you have " + taskList.size() + " tasks in the list.");
-                    continue;
-                }
-
-                // Unknown command
-                throw new KrexException("OOPS!!! I'm sorry, but I don't know what that means :-(");
-
-            } catch (KrexException e) {
-                Ui.showError(e.getMessage());
-            } catch (IndexOutOfBoundsException e) {
-                Ui.showError("OOPS!!! That task number is out of range.");
-            }
+        try {
+            ArrayList<Task> loaded = storage.load();
+            taskList = new TaskList(loaded);
+        } catch (KrexException e) {
+            Ui.showError(e.getMessage());
+            taskList = new TaskList();
         }
 
-        sc.close();
+        try (Scanner sc = new Scanner(System.in)) {
+            while (true) {
+                String input = sc.nextLine().trim();
+
+                try {
+                    Command cmd = Parser.parse(input);
+
+                    switch (cmd.type) {
+                    case BYE:
+                        Ui.showBye();
+                        storage.save(taskList.getTasks());
+                        return; // exits the program back to terminal
+
+                    case LIST:
+                        Ui.showMessage(taskList.formatList());
+                        break;
+
+                    case TODO:
+                    case DEADLINE:
+                    case EVENT:
+                        taskList.add(cmd.task);
+                        storage.save(taskList.getTasks());
+                        Ui.showMessage("Got it. I've added this task:\n  " + cmd.task
+                                + "\nNow you have " + taskList.size() + " tasks in the list.");
+                        break;
+
+                    case MARK: {
+                        Task t = taskList.get(cmd.index);
+                        t.markDone();
+                        storage.save(taskList.getTasks());
+                        Ui.showMessage("Nice! I've marked this task as done:\n  " + t);
+                        break;
+                    }
+
+                    case UNMARK: {
+                        Task t = taskList.get(cmd.index);
+                        t.unmarkDone();
+                        storage.save(taskList.getTasks());
+                        Ui.showMessage("OK, I've marked this task as not done yet:\n  " + t);
+                        break;
+                    }
+
+                    case DELETE: {
+                        Task removed = taskList.delete(cmd.index);
+                        storage.save(taskList.getTasks());
+                        Ui.showMessage("Noted. I've removed this task:\n  " + removed
+                                + "\nNow you have " + taskList.size() + " tasks in the list.");
+                        break;
+                    }
+
+                    default:
+                        throw new KrexException("OOPS!!! I'm sorry, but I don't know what that means :-(");
+                    }
+
+                } catch (KrexException e) {
+                    Ui.showError(e.getMessage());
+                }
+            }
+        }
     }
 }
-

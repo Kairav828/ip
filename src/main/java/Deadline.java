@@ -6,6 +6,10 @@ public class Deadline extends Task {
         this.by = by;
     }
 
+    public String getDescription() { return description; }
+    
+    public String getByRaw() { return by; }
+
     @Override
     public String toString() {
         return "[D]" + super.toString() + " (by: " + by + ")";

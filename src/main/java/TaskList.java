@@ -1,33 +1,63 @@
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class TaskList {
-    private final ArrayList<Task> tasks = new ArrayList<>();
+    private final ArrayList<Task> tasks;
+
+    public TaskList() {
+        this.tasks = new ArrayList<>();
+    }
+
+    public TaskList(ArrayList<Task> loaded) {
+        this.tasks = loaded;
+    }
 
     public void add(Task task) {
         tasks.add(task);
-    }
-
-    public Task get(int oneBasedIndex) {
-        return tasks.get(oneBasedIndex - 1);
     }
 
     public int size() {
         return tasks.size();
     }
 
+    public Task get(int idx) throws KrexException {
+        int zeroIdx = idx - 1;
+        if (zeroIdx < 0 || zeroIdx >= tasks.size()) {
+            throw new KrexException("OOPS!!! That task number is out of range.");
+        }
+        return tasks.get(zeroIdx);
+    }
+
+    public Task delete(int idx) throws KrexException {
+        int zeroIdx = idx - 1;
+        if (zeroIdx < 0 || zeroIdx >= tasks.size()) {
+            throw new KrexException("OOPS!!! That task number is out of range.");
+        }
+        return tasks.remove(zeroIdx);
+    }
+
+    /** Returns a COPY of the internal tasks list (so Storage can save safely). */
+    public ArrayList<Task> getTasks() {
+        return new ArrayList<>(tasks);
+    }
+
+    public List<Task> asUnmodifiableList() {
+        return Collections.unmodifiableList(tasks);
+    }
+
     public String formatList() {
         if (tasks.isEmpty()) {
             return "No tasks in your list yet.";
         }
-        StringBuilder sb = new StringBuilder("Here are the tasks in your list:\n");
+        StringBuilder sb = new StringBuilder();
+        sb.append("Here are the tasks in your list:\n");
         for (int i = 0; i < tasks.size(); i++) {
-            sb.append(i + 1).append(".").append(tasks.get(i)).append("\n");
+            sb.append(i + 1).append(".").append(tasks.get(i));
+            if (i != tasks.size() - 1) {
+                sb.append("\n");
+            }
         }
-        return sb.toString().trim();
+        return sb.toString();
     }
-
-    public Task delete(int oneBasedIndex) {
-        return tasks.remove(oneBasedIndex - 1);
-    }
-
 }
