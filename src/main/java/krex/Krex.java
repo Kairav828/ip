@@ -1,3 +1,5 @@
+package krex;
+
 import java.util.ArrayList;
 
 public class Krex {

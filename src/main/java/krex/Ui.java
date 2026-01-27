@@ -1,3 +1,5 @@
+package krex;
+
 import java.util.Scanner;
 
 public class Ui {

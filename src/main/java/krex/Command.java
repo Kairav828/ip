@@ -1,3 +1,5 @@
+package krex;
+
 public class Command {
     public final CommandType type;
     public final Task task;   // for add commands
