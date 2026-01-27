@@ -1,17 +1,27 @@
-public class Deadline extends Task {
-    private final String by;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
-    public Deadline(String description, String by) {
+public class Deadline extends Task {
+    private final LocalDate by;
+
+    public Deadline(String description, LocalDate by) {
         super(description);
         this.by = by;
     }
 
-    public String getDescription() { return description; }
-    
-    public String getByRaw() { return by; }
+    /** Used internally (e.g. Storage) */
+    public LocalDate getBy() {
+        return by;
+    }
+
+    /** Used by Storage to save in ISO format (yyyy-mm-dd) */
+    public String getByIso() {
+        return by.toString();
+    }
 
     @Override
     public String toString() {
-        return "[D]" + super.toString() + " (by: " + by + ")";
+        String formattedDate = by.format(DateTimeFormatter.ofPattern("MMM dd yyyy"));
+        return "[D]" + super.toString() + " (by: " + formattedDate + ")";
     }
 }

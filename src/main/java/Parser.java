@@ -1,3 +1,6 @@
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
+
 public class Parser {
 
     public static Command parse(String input) throws KrexException {
@@ -32,7 +35,8 @@ public class Parser {
 
         if (trimmed.startsWith("deadline")) {
             String[] parts = parseDeadline(trimmed); // [desc, by]
-            return Command.add(CommandType.DEADLINE, new Deadline(parts[0], parts[1]));
+            LocalDate by = parseDate(parts[1]);
+            return Command.add(CommandType.DEADLINE, new Deadline(parts[0], by));
         }
 
         if (trimmed.startsWith("event")) {
@@ -67,7 +71,7 @@ public class Parser {
         String body = input.substring("deadline".length()).trim();
         String[] split = body.split(" /by ", 2);
         if (split.length < 2 || split[0].trim().isEmpty() || split[1].trim().isEmpty()) {
-            throw new KrexException("OOPS!!! Usage: deadline <desc> /by <time>");
+            throw new KrexException("OOPS!!! Usage: deadline <desc> /by <yyyy-mm-dd>");
         }
         return new String[] { split[0].trim(), split[1].trim() };
     }
@@ -84,5 +88,13 @@ public class Parser {
             throw new KrexException("OOPS!!! Usage: event <desc> /from <start> /to <end>");
         }
         return new String[] { desc, second[0].trim(), second[1].trim() };
+    }
+
+    public static LocalDate parseDate(String s) throws KrexException {
+        try {
+            return LocalDate.parse(s.trim()); // expects yyyy-mm-dd
+        } catch (DateTimeParseException e) {
+            throw new KrexException("OOPS!!! Date must be yyyy-mm-dd (e.g., 2026-01-27).");
+        }
     }
 }

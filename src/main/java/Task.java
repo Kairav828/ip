@@ -7,6 +7,14 @@ public class Task {
         this.isDone = false;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public boolean isDone() {
+        return isDone;
+    }
+
     public void markDone() {
         isDone = true;
     }
@@ -15,14 +23,8 @@ public class Task {
         isDone = false;
     }
 
-    public String getStatusIcon() {
-        return isDone ? "X" : " ";
-    }
-
-    public boolean isDone() { return isDone; }
-    
     @Override
     public String toString() {
-        return "[" + getStatusIcon() + "] " + description;
+        return "[" + (isDone ? "X" : " ") + "] " + description;
     }
 }
