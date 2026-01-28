@@ -62,4 +62,24 @@ public class TaskList {
         }
         return sb.toString();
     }
+
+    public String formatFind(String keyword) {
+        String key = keyword.toLowerCase();
+        StringBuilder sb = new StringBuilder();
+        sb.append("Here are the matching tasks in your list:\n");
+
+        int count = 0;
+        for (Task t : tasks) {
+            if (t.getDescription().toLowerCase().contains(key)) {
+                count++;
+                sb.append(count).append(".").append(t).append("\n");
+            }
+        }
+
+        if (count == 0) {
+            return "No matching tasks found.";
+        }
+
+        return sb.toString().trim();
+    }
 }
