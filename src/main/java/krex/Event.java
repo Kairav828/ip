@@ -1,5 +1,9 @@
 package krex;
 
+/**
+ * Represents an event task that occurs at a specific time period.
+ */
+
 public class Event extends Task {
     private final String from;
     private final String to;

@@ -1,5 +1,9 @@
 package krex;
 
+/**
+ * Handles all user interaction such as reading input and displaying messages.
+ */
+
 import java.util.Scanner;
 
 public class Ui {

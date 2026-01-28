@@ -1,5 +1,9 @@
 package krex;
 
+/**
+ * Handles loading tasks from and saving tasks to the hard disk.
+ */
+
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;

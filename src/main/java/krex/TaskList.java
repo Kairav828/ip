@@ -1,5 +1,9 @@
 package krex;
 
+/**
+ * Represents a list of tasks and provides operations to manage them.
+ */
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

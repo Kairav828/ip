@@ -1,9 +1,21 @@
 package krex;
 
+/**
+ * Parses user input strings into executable Command objects.
+ */
+
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 
 public class Parser {
+
+    /**
+     * Parses the user input and returns the corresponding Command.
+     *
+     * @param input Raw user input entered by the user.
+     * @return A Command representing the user's instruction.
+     * @throws KrexException If the input command is invalid.
+     */
 
     public static Command parse(String input) throws KrexException {
         String trimmed = input.trim();
