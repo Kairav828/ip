@@ -19,3 +19,8 @@ text-ui-test/EXPECTED-UNIX.TXT
 *.class
 bin/
 data/
+
+*.class
+bin/
+build/
+.gradle/
