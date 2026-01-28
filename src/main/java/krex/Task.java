@@ -1,5 +1,10 @@
 package krex;
 
+/**
+ * Represents a task in the Krex task list.
+ * A task has a description and a completion status.
+ */
+
 public class Task {
     protected final String description;
     protected boolean isDone;

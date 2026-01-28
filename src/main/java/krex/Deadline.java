@@ -1,5 +1,9 @@
 package krex;
 
+/**
+ * Represents a task that must be completed before a specific date.
+ */
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 

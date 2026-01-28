@@ -1,5 +1,4 @@
 package krex;
-
 public enum CommandType {
     BYE,
     LIST,

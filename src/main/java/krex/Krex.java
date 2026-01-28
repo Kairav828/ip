@@ -1,5 +1,9 @@
 package krex;
 
+/**
+ * Main entry point for the Krex chatbot application.
+ */
+
 import java.util.ArrayList;
 
 public class Krex {
