@@ -46,6 +46,14 @@ public class Parser {
             return Command.add(CommandType.EVENT, new Event(parts[0], parts[1], parts[2]));
         }
 
+        if (trimmed.startsWith("find ")) {
+            String keyword = trimmed.substring(5).trim();
+            if (keyword.isEmpty()) {
+                throw new KrexException("OOPS!!! Please provide a keyword to find.");
+            }
+            return Command.find(keyword);
+        }
+
         throw new KrexException("OOPS!!! I'm sorry, but I don't know what that means :-(");
     }
 

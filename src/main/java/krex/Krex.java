@@ -77,6 +77,10 @@ public class Krex {
                     break;
                 }
 
+                case FIND:
+                    ui.showMessage(taskList.formatFind(cmd.keyword));
+                    break;
+                    
                 default:
                     throw new KrexException("OOPS!!! I'm sorry, but I don't know what that means :-(");
                 }
