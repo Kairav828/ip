@@ -1,6 +1,11 @@
 plugins {
-    id 'java'
     id 'application'
+    id 'java'
+    id 'org.openjfx.javafxplugin' version '0.1.0'
+}
+
+repositories {
+    mavenCentral()
 }
 
 java {
@@ -9,39 +14,12 @@ java {
     }
 }
 
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
-}
-
-test {
-    useJUnitPlatform()
-}
-
-sourceSets {
-    main {
-        java {
-            srcDirs = ['src/main/java']
-        }
-    }
+javafx {
+    version = "17.0.10"
+    modules = [ 'javafx.controls' ]
 }
 
 application {
-    mainClass.set("krex.Krex")
+    mainClass = "krex.Launcher"
 }
 
-tasks.named('run', JavaExec) {
-    classpath = sourceSets.main.runtimeClasspath
-    standardInput = System.in
-}
-
-jar {
-    manifest {
-        attributes(
-            'Main-Class': 'krex.Krex'
-        )
-    }
-}
