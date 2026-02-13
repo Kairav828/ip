@@ -1,7 +1,6 @@
 plugins {
-    id 'java'
     id 'application'
-    id 'com.github.johnrengelman.shadow' version '8.1.1'
+    id 'java'
     id 'org.openjfx.javafxplugin' version '0.1.0'
 }
 
@@ -17,37 +16,10 @@ java {
 
 javafx {
     version = "17.0.10"
-    modules = [ 'javafx.controls', 'javafx.fxml', 'javafx.graphics' ]
-}
-
-dependencies {
-    testImplementation "org.junit.jupiter:junit-jupiter-api:5.10.0"
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.10.0"
-}
-
-test {
-    useJUnitPlatform()
-}
-
-run {
-    standardInput = System.in
+    modules = [ 'javafx.controls' ]
 }
 
 application {
     mainClass = "krex.Launcher"
 }
 
-tasks.named("jar", Jar) {
-    manifest {
-        attributes("Main-Class": "krex.Launcher")
-    }
-}
-
-tasks.named("shadowJar", com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
-    archiveBaseName.set("krex")
-    archiveClassifier.set("")
-    archiveVersion.set("")
-    manifest {
-        attributes("Main-Class": "krex.Launcher")
-    }
-}
