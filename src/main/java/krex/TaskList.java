@@ -16,10 +16,12 @@ public class TaskList {
     }
 
     public TaskList(ArrayList<Task> loaded) {
+        assert loaded != null : "loaded list must not be null";
         this.tasks = loaded;
     }
 
     public void add(Task task) {
+        assert task != null : "task must not be null";
         tasks.add(task);
     }
 
@@ -27,20 +29,23 @@ public class TaskList {
         return tasks.size();
     }
 
-    public Task get(int idx) throws KrexException {
+    /**
+     * Converts a 1-based index to 0-based and validates bounds.
+     */
+    private int toZeroIndex(int idx) throws KrexException {
         int zeroIdx = idx - 1;
         if (zeroIdx < 0 || zeroIdx >= tasks.size()) {
             throw new KrexException("OOPS!!! That task number is out of range.");
         }
-        return tasks.get(zeroIdx);
+        return zeroIdx;
+    }
+
+    public Task get(int idx) throws KrexException {
+        return tasks.get(toZeroIndex(idx));
     }
 
     public Task delete(int idx) throws KrexException {
-        int zeroIdx = idx - 1;
-        if (zeroIdx < 0 || zeroIdx >= tasks.size()) {
-            throw new KrexException("OOPS!!! That task number is out of range.");
-        }
-        return tasks.remove(zeroIdx);
+        return tasks.remove(toZeroIndex(idx));
     }
 
     /** Returns a COPY of the internal tasks list (so Storage can save safely). */
@@ -68,6 +73,8 @@ public class TaskList {
     }
 
     public String formatFind(String keyword) {
+        assert keyword != null : "keyword must not be null";
+
         String key = keyword.toLowerCase();
         StringBuilder sb = new StringBuilder();
         sb.append("Here are the matching tasks in your list:\n");
