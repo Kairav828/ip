@@ -1,7 +1,8 @@
 plugins {
-    id 'application'
     id 'java'
+    id 'application'
     id 'org.openjfx.javafxplugin' version '0.1.0'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
 
 repositories {
@@ -14,12 +15,15 @@ java {
     }
 }
 
+application {
+    mainClass = 'krex.Launcher'
+}
+
 javafx {
     version = "17.0.10"
-    modules = [ 'javafx.controls' ]
+    modules = [ 'javafx.controls', 'javafx.fxml' ]
 }
 
-application {
-    mainClass = "krex.Launcher"
+shadowJar {
+    archiveClassifier.set('all')
 }
-
